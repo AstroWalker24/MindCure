@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face{
+  font-family:"NeueMachina-Regular";
+  src:url('../public/fonts/NeueMachina-Regular.otf')
+}
+body{
+  background: url(../public/assets/similar-2.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+
+
+
+
+
