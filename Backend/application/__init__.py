@@ -1,53 +1,20 @@
-from flask import Flask,g,jsonify
-import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
+app = Flask(__name__)
+CORS(app)
 
-
-# using application factory function 
-def create_app():
-    # initializing an app
-    app=Flask(__name__,instance_relative_config=True)
-
-    # mongoDB connection function
-    def get_db():
-        if "db" not in g:
-            # creating a new client 
-            client=MongoClient('localhost',27017)
-
-            g.db=client.MindCare
-
-        return g.db
-
-    # closing the mongoDB connection automatically
-    @app.teardown_appcontext
-    def close_db(error):
-        db=g.pop('db',None)
-        if db is not None:
-            db.client.close()
-
-
-    # loading the config file from the instance dir
-    app.config.from_pyfile('config.py',silent=True)
-
+@app.route('/api/message', methods=['POST'])
+def handle_message():
+    data = request.json
+    user_message = data.get('message', '').lower()
     
-    # defining the routes 
-    @app.route('/')
-    def Homehandler():
-        db = get_db()
-        collection = db.sample
-
-        # Retrieve all documents from the collection
-        data = [
-            {key: (str(value) if key == '_id' else value) for key, value in doc.items()}
-            for doc in collection.find({})
-        ]
-
-        # Return the data as a JSON response
-        return jsonify(data)
+    if 'help' in user_message:
+        reply = "How can I assist you further?"
+    else:
+        reply = "I'm here to help! Please provide more details."
     
+    return jsonify({"reply": reply})
 
-    return app
-
-
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
